@@ -6,7 +6,7 @@ A few short scripts written in Bash to test/benchmark local DNS settings and com
 ## Requirements
 - dig
    - preinstalled on most machines and bash terminals
-   - run `apt install dnsutils` to install dig along with `nslookup` and `nsupdate`
+   - run `apt install dnsutils` to install `dig` along with `nslookup` and `nsupdate`
 
 ### Compatibility
 These scripts were built on a Mac, and run best on it. Regardless, it should work on any bash terminal.
