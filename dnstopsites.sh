@@ -1,81 +1,58 @@
 #!/usr/bin/env bash
 # DNS Top Sites
 # Using current DNS Settings, the bash script will take the top 1 million sites and display the time it takes for the dns server to respond back.
-
-#Check for requirements
-command -v bc > /dev/null || { echo "bc was not found. Please install bc."; exit 1; }
-{ command -v drill > /dev/null && dig=drill; } || { command -v dig > /dev/null && dig=dig; } || { echo "dig was not found. Please install dnsutils."; exit 1; }
-
-#Starting Arguments
-#WORK ON ME
-if [[ "$1" == "-a" ]]
-then
-      printf "Attempts: $2 (Argument Set)"
-      count=$2
-else
-      printf "Attempts: 1 (Default)"
-      count=1
-fi
+clear
+# Check for requirements
+command -v bc >/dev/null || {
+  echo "bc was not found. Please install bc."
+  exit 1
+}
+{ command -v drill >/dev/null && dig=drill; } || { command -v dig >/dev/null && dig=dig; } || {
+  echo "dig was not found. Please install dnsutils."
+  exit 1
+}
 
 # Define Colours
-blue=$(tput setaf 4)
 red=$(tput setaf 1)
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-# Grabbing local DNS and Search
-NAMESERVERS=`cat /etc/resolv.conf | grep ^nameserver | cut -d " " -f 2 | sed 's/\(.*\)/&#&/'`
-
-# Domains to test. Duplicates are fine
+NAMESERVERS=$(grep </etc/resolv.conf ^nameserver | cut -d " " -f 2 | sed 's/\(.*\)/&#&/') # Grabbing local DNS and Name
+pip=${NAMESERVERS%%#*} # Parsing to just the ip)
 domains=$(<./topsites.txt)
-domainnum=`echo "$domains" | wc -l`
+domainnum=$(echo "$domains" | wc -l) # Number of domains by counting lines
+printf "%sDNS Speed Testing Top 500 Sites%s\n" "$bold" "$normal"
+printf "DNS: %s\n" "${NAMESERVERS%%#*}"
+printf "DNS Name: %s\n" "${NAMESERVERS##*#}"
+printf "Timeout: 1000ms\n\n"
 
-clear
-printf "${bold}DNS Speed Testing Top 500 Sites${normal}\n"
-printf "DNS: ${NAMESERVERS%%#*}\n"
-printf "DNS Name: ${NAMESERVERS##*#}\n\n"
+# Testing
+ftime=0
+for d in $domains; do
+  ttime=$($dig +tries=1 +time=2 +stats @"$pip" "$d" | grep "Query time:" | cut -d : -f 2- | cut -d " " -f 2)
+  # Catch Any Failures
+  if [ -z "$ttime" ]; then
+    # If dig fails sets time to
+    ttime=1000 #ms
+    # different kind of failure. This is if it theoretically takes no time.
+  elif [ "$ttime" = "x0" ]; then
+    ttime=1 #ms
+  fi
 
-# Just parsing it and removing post pound symbol
-# Also setting some variables to start the script
-for i in $(seq $count); do
-    pip=${NAMESERVERS%%#*}
-    pname=${NAMESERVERS##*#}
-    ftime=0
-    # Print Result Each time
-    # printf "%-18s" "$pname"
-    for d in $domains; do
-        ttime=`$dig +tries=1 +time=2 +stats @$pip $d |grep "Query time:" | cut -d : -f 2- | cut -d " " -f 2`
-        if [ -z "$ttime" ]; then
-	        #let's have time out be 1s = 1000ms
-          #Jake changes this to push timout limit
-	        ttime=1000
-          # This is just so that if it cant resolve it fails, except dig isnt allowing it to fails
-          # This is a dig problem. it hangs if it cant reach. the timeout written is outside dig
-        elif [ "x$ttime" = "x0" ]; then
-	        ttime=1
-	    fi
-        # Print individual
-        deadtime=1000
-        if [[ "$ttime" == "$deadtime" ]]
-        then
-        printf "%-8s" "${red}ERR${normal}"
-        printf "%-5s"
-        else
-          printf "%-8s" "$ttime ms"
-        fi
-
-        #Add each time
-        ftime=$((ftime + ttime))
-    done
-    # Average Calc
-    avg=`bc -lq <<< "scale=2; $ftime/$domainnum"`
-    # Average Print
-    printf "\n\n"
-    printf ${domainnum}
-    printf " domains averaging ${avg}ms\n\n"
-
-
+  deadtime=1000 #ms
+  if [[ "$ttime" == "$deadtime" ]]; then
+    printf "%-8s" "${red}ERR${normal}" # Error printing if 1000ms
+    printf "%-5s"
+  else
+    printf "%-8s" "$ttime ms"
+  fi
+  #Add each time
+  ftime=$((ftime + ttime))
 done
 
-#Exit Script
-exit 0;
+avg=$(bc -lq <<<"scale=2; $ftime/$domainnum") # Average Calc
+printf "\n\n\n%s" "$domainnum" # Average Print
+printf " domains averaging %sms\n\n" "$avg"
+
+
+exit 0 #Exit Script

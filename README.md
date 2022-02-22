@@ -15,9 +15,6 @@ These scripts were built on a Mac, and run best on it. Regardless, it should wor
 ## Files
 ### dnstopsites.sh
 Using current DNS Settings, the bash script will take the top 1 million sites and display the time it takes for the dns server to respond back.
-- Arguments
-  - `timeout` measured in milliseconds is when the output results in a timeout error and will display `ERR` instead of hanging due to problems with the DNS.
-  - default is 1000ms (1s)
 ### dnscrosstest.sh
 This script take the top 10 sites, and compare your DNS against the top 10 free and open DNS Servers.
 - Arguments
