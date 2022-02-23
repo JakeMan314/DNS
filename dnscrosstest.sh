@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # DNS Cross Test
-#
+# This script take the top 10 sites, and compare your DNS against the top 10 free and open DNS Servers.
 clear
 # Check for requirements
 command -v bc >/dev/null || {
@@ -58,14 +58,10 @@ for p in $nameservers $providers; do
     else
       printf "%-8s" "$ttime ms"
     fi
-    #Add each time
-    ftime=$((ftime + ttime))
-    # ftime=$((ftime + ttime))
+    ftime=$((ftime + ttime))     #Add each time
   done
   # Average Calc
   avg=$(bc -lq <<<"scale=2; $ftime/$totaldomains")
-  # Average Print
   echo "  $avg"
 done
-#Exit Script
-exit 0
+exit 0 #Exit Script

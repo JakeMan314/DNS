@@ -21,10 +21,11 @@ NAMESERVERS=$(grep </etc/resolv.conf ^nameserver | cut -d " " -f 2 | sed 's/\(.*
 pip=${NAMESERVERS%%#*} # Parsing to just the ip)
 domains=$(<./topsites.txt)
 domainnum=$(echo "$domains" | wc -l) # Number of domains by counting lines
+timeouts=1000
 printf "%sDNS Speed Testing Top 500 Sites%s\n" "$bold" "$normal"
 printf "DNS: %s\n" "${NAMESERVERS%%#*}"
 printf "DNS Name: %s\n" "${NAMESERVERS##*#}"
-printf "Timeout: 1000ms\n\n"
+printf "Timeout: %sms\n\n" "${timeouts}"
 
 # Testing
 ftime=0
@@ -33,26 +34,22 @@ for d in $domains; do
   # Catch Any Failures
   if [ -z "$ttime" ]; then
     # If dig fails sets time to
-    ttime=1000 #ms
+    ttime=${timeouts}
     # different kind of failure. This is if it theoretically takes no time.
   elif [ "$ttime" = "x0" ]; then
     ttime=1 #ms
   fi
-
-  deadtime=1000 #ms
-  if [[ "$ttime" == "$deadtime" ]]; then
+  if [[ "$ttime" == "$timeouts" ]]; then
     printf "%-8s" "${red}ERR${normal}" # Error printing if 1000ms
     printf "%-5s"
   else
     printf "%-8s" "$ttime ms"
   fi
-  #Add each time
-  ftime=$((ftime + ttime))
+  ftime=$((ftime + ttime))   #Add each time
 done
 
 avg=$(bc -lq <<<"scale=2; $ftime/$domainnum") # Average Calc
 printf "\n\n\n%s" "$domainnum" # Average Print
 printf " domains averaging %sms\n\n" "$avg"
-
 
 exit 0 #Exit Script
