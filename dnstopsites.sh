@@ -19,7 +19,7 @@ normal=$(tput sgr0)
 
 NAMESERVERS=$(grep </etc/resolv.conf ^nameserver | cut -d " " -f 2 | sed 's/\(.*\)/&#&/') # Grabbing local DNS and Name
 pip=${NAMESERVERS%%#*} # Parsing to just the ip)
-domains=$(<./topsites.txt)
+domains=$(<./resources/topsites.txt)
 domainnum=$(echo "$domains" | wc -l) # Number of domains by counting lines
 timeouts=1000
 printf "%sDNS Speed Testing Top 500 Sites%s\n" "$bold" "$normal"

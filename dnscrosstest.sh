@@ -18,8 +18,8 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 # File Requirements
 nameservers=$(grep </etc/resolv.conf ^nameserver | cut -d " " -f 2 | sed 's/\(.*\)/&#&/') # Grabbing local DNS and Name
-providers=$(<./dnsproviders.txt) # Grab top DNS Resolvers
-domains=$(head -10 ./topsites.txt) # Domains to test. Duplicates are fine
+providers=$(<./resources/dnsproviders.txt) # Grab top DNS Resolvers
+domains=$(head -10 ./resources/topsites.txt) # Domains to test. Duplicates are fine
 timeouts=1000
 printf "%sDNS Cross-Testing%s\n" "$bold" "$normal"
 printf "DNS: %s\n" "${nameservers%%#*}"

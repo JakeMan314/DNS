@@ -29,7 +29,7 @@ normal=$(tput sgr0)
 nameservers=$(grep </etc/resolv.conf ^nameserver | cut -d " " -f 2 | sed 's/\(.*\)/&#&/') # Grabbing local DNS and Name
 pip=${nameservers%%#*}
 pname=${nameservers##*#} # Parsing to just the ip)
-domains=$(head -10 ./topsites.txt)
+domains=$(head -10 ./resources/topsites.txt)
 timeouts=1000
 printf "%sDNS Brute Testings%s\n" "$bold" "$normal"
 printf "DNS: %s\n" "${nameservers%%#*}"

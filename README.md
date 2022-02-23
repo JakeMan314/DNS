@@ -22,13 +22,13 @@ The top 10 sites will be sent to resolve with the current DNS, and will repeat a
   -  `-a` or attempt is the number of times the script will repeat
   - default is 10
 ### topsites.txt
-Contains the top 500 million websites. Downloaded and parsed from [Alexa Top 1 Million](http://s3.amazonaws.com/alexa-static/top-1m.csv.zip)
+Contains the top 500 websites. Downloaded and parsed from [Alexa Top 1 Million](http://s3.amazonaws.com/alexa-static/top-1m.csv.zip)
 ### dnsproviders.txt
 Contains the top 10 free DNS providers.
 ### README.md
 contains this file that explains the project.
 
 ## Screenshots
-![dnstopsites](/screenshots/dnstopsites.png)
-![dnscrosstest](/screenshots/dnscrosstest.png)
-![dnsbrutetest](/screenshots/dnsbrutetest.png)
+![dnstopsites](/resources/dnstopsites.png)
+![dnscrosstest](/resources/dnscrosstest.png)
+![dnsbrutetest](/resources/dnsbrutetest.png)
