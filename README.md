@@ -27,3 +27,8 @@ Contains the top 500 million websites. Downloaded and parsed from [Alexa Top 1 M
 Contains the top 10 free DNS providers.
 ### README.md
 contains this file that explains the project.
+
+## Screenshots
+![dnstopsites](/screenshots/dnstopsites.png)
+![dnscrosstest](/screenshots/dnscrosstest.png)
+![dnsbrutetest](/screenshots/dnsbrutetest.png)
